@@ -17,13 +17,43 @@ class App extends Component {
         this.setState({ tasks: [...this.state.tasks, newTask] })
     }
 
+    delTask = id => {
+        const newTask = this.state.tasks.filter(task => task.id !== id)
+        this.setState({ tasks: newTask })
+    }
+
+    updateCompleted = id => {
+        const updateTasks = this.state.tasks.map(task => {
+            if (id === task.id)
+                return ({ ...task, completed: !task.completed })
+
+            return task
+        })
+        this.setState({ tasks: updateTasks })
+    }
+
+    onEdit = (id, newName) => {
+        const newTasks = this.state.tasks.map(task => {
+            if (task.id === id)
+                task.name = newName
+            return task
+        })
+        this.setState({ tasks: newTasks })
+    }
+
+
     render() {
 
-        const tasksList = this.state.tasks.map(task => (<Todo
+        const tasksList = this.state.tasks.map((task, index) => (<Todo
             key={task.id}
             name={task.name}
             completed={task.completed}
-            id={task.id} />))
+            id={task.id}
+            index={index + 1}
+            updateCompleted={this.updateCompleted}
+            delTask={this.delTask}
+            onEdit={this.onEdit}
+        />))
         const tasksLength = this.state.tasks.length
         const listHeading = () => {
             if (tasksLength === 1)
